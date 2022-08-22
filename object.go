@@ -23,7 +23,7 @@ func Key[T Iterator](name string, iter T) *entry[T] {
 }
 
 func Object(commit func() error, keys ...NamedIterator) object {
-	return object{keys: keys}
+	return object{keys: keys, commit: commit}
 }
 
 type object struct {
