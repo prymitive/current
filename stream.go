@@ -47,7 +47,7 @@ type NamedIterator interface {
 	Iterator
 }
 
-func stream(dec *json.Decoder, iter Iterator) (err error) {
+func Stream(dec *json.Decoder, iter Iterator) (err error) {
 	for {
 		err = iter.Next(dec)
 

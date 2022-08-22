@@ -5,14 +5,13 @@ import (
 	"io"
 )
 
-func Array[T any](commit func([]T)) array[T] {
+func Array[T any](commit func(*T) error) array[T] {
 	return array[T]{commit: commit}
 }
 
 type array[T any] struct {
 	pos    position
-	elems  []T
-	commit func([]T)
+	commit func(*T) error
 }
 
 func (a *array[T]) Next(dec *json.Decoder) (err error) {
@@ -29,7 +28,9 @@ func (a *array[T]) Next(dec *json.Decoder) (err error) {
 			if err != nil {
 				return err
 			}
-			a.elems = append(a.elems, elem)
+			if err = a.commit(&elem); err != nil {
+				return err
+			}
 		}
 		a.pos = posLast
 	case posLast:
@@ -38,7 +39,6 @@ func (a *array[T]) Next(dec *json.Decoder) (err error) {
 		}
 		a.pos = posEOF
 	case posEOF:
-		a.commit(a.elems)
 		return io.EOF
 	}
 	return nil

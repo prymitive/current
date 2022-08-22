@@ -50,7 +50,7 @@ func (o *object) Next(dec *json.Decoder) (err error) {
 			}
 			for _, key := range o.keys {
 				if key.Name() == tok {
-					if err = stream(dec, key); err != nil {
+					if err = Stream(dec, key); err != nil {
 						return err
 					}
 					goto NEXT
