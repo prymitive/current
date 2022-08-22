@@ -22,13 +22,14 @@ func Key[T Iterator](name string, iter T) *entry[T] {
 	return &entry[T]{name: name, iter: iter}
 }
 
-func Object(keys ...NamedIterator) object {
+func Object(commit func() error, keys ...NamedIterator) object {
 	return object{keys: keys}
 }
 
 type object struct {
-	pos  position
-	keys []NamedIterator
+	pos    position
+	keys   []NamedIterator
+	commit func() error
 }
 
 func (o *object) Next(dec *json.Decoder) (err error) {
@@ -65,6 +66,9 @@ func (o *object) Next(dec *json.Decoder) (err error) {
 		}
 		o.pos = posEOF
 	case posEOF:
+		if err = o.commit(); err != nil {
+			return err
+		}
 		return io.EOF
 
 	}
