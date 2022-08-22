@@ -5,29 +5,33 @@ import (
 	"io"
 )
 
-type Entry[T Iterator] struct {
+type entry[T Iterator] struct {
 	name string
 	iter T
 }
 
-func (e Entry[T]) Name() string {
+func (e entry[T]) Name() string {
 	return e.name
 }
 
-func (e *Entry[T]) Next(dec *json.Decoder) (err error) {
+func (e *entry[T]) Next(dec *json.Decoder) (err error) {
 	return e.iter.Next(dec)
 }
 
-func Key[T Iterator](name string, iter T) *Entry[T] {
-	return &Entry[T]{name: name, iter: iter}
+func Key[T Iterator](name string, iter T) *entry[T] {
+	return &entry[T]{name: name, iter: iter}
 }
 
-type Object struct {
+func Object(keys ...NamedIterator) object {
+	return object{keys: keys}
+}
+
+type object struct {
 	pos  position
-	Keys []NamedIterator
+	keys []NamedIterator
 }
 
-func (o *Object) Next(dec *json.Decoder) (err error) {
+func (o *object) Next(dec *json.Decoder) (err error) {
 	switch o.pos {
 	case posFirst:
 		if err = requireToken(dec, mapStart); err != nil {
@@ -44,7 +48,7 @@ func (o *Object) Next(dec *json.Decoder) (err error) {
 				o.pos = posEOF
 				break
 			}
-			for _, key := range o.Keys {
+			for _, key := range o.keys {
 				if key.Name() == tok {
 					if err = stream(dec, key); err != nil {
 						return err

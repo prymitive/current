@@ -5,13 +5,17 @@ import (
 	"io"
 )
 
-type Array[T any] struct {
+func Array[T any](commit func([]T)) array[T] {
+	return array[T]{commit: commit}
+}
+
+type array[T any] struct {
 	pos    position
 	elems  []T
 	commit func([]T)
 }
 
-func (a *Array[T]) Next(dec *json.Decoder) (err error) {
+func (a *array[T]) Next(dec *json.Decoder) (err error) {
 	switch a.pos {
 	case posFirst:
 		if err = requireToken(dec, arrayStart); err != nil {

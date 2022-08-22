@@ -5,11 +5,15 @@ import (
 	"io"
 )
 
-type Text struct {
+func Text(commit func(string)) text {
+	return text{commit: commit}
+}
+
+type text struct {
 	commit func(string)
 }
 
-func (t *Text) Next(dec *json.Decoder) (err error) {
+func (t *text) Next(dec *json.Decoder) (err error) {
 	var tok json.Token
 	if tok, err = dec.Token(); err != nil {
 		return err
