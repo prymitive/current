@@ -9,13 +9,13 @@ import (
 
 var ErrInvalidToken = errors.New("invalid token")
 
-type position string
+type position int
 
 const (
-	posFirst    position = ""
-	posDecoding position = "decoding"
-	posLast     position = "last_token"
-	posEOF      position = "eof"
+	posFirst position = iota
+	posDecoding
+	posLast
+	posEOF
 )
 
 var (
