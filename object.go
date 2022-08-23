@@ -2,7 +2,9 @@ package jstream
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
+	"strings"
 )
 
 type entry[T Iterator] struct {
@@ -22,8 +24,8 @@ func Key[T Iterator](name string, iter T) *entry[T] {
 	return &entry[T]{name: name, iter: iter}
 }
 
-func Object(commit func() error, keys ...NamedIterator) object {
-	return object{keys: keys, commit: commit}
+func Object(commit func() error, keys ...NamedIterator) *object {
+	return &object{keys: keys, commit: commit}
 }
 
 type object struct {
@@ -32,10 +34,18 @@ type object struct {
 	commit func() error
 }
 
+func (o object) String() string {
+	keys := make([]string, 0, len(o.keys))
+	for _, key := range o.keys {
+		keys = append(keys, key.Name())
+	}
+	return fmt.Sprintf("Object{%s}", strings.Join(keys, ", "))
+}
+
 func (o *object) Next(dec *json.Decoder) (err error) {
 	switch o.pos {
 	case posFirst:
-		if err = requireToken(dec, mapStart); err != nil {
+		if err = requireToken(dec, mapStart, o); err != nil {
 			return err
 		}
 		o.pos = posDecoding
@@ -47,21 +57,19 @@ func (o *object) Next(dec *json.Decoder) (err error) {
 			}
 			if tok == mapEnd {
 				o.pos = posEOF
-				break
+				return nil
 			}
 			for _, key := range o.keys {
 				if key.Name() == tok {
 					if err = Stream(dec, key); err != nil {
 						return err
 					}
-					goto NEXT
+					break
 				}
 			}
-		NEXT:
 		}
-		o.pos = posLast
 	case posLast:
-		if err = requireToken(dec, mapEnd); err != nil {
+		if err = requireToken(dec, mapEnd, o); err != nil {
 			return err
 		}
 		o.pos = posEOF

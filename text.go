@@ -5,12 +5,16 @@ import (
 	"io"
 )
 
-func Text(commit func(string) error) text {
-	return text{commit: commit}
+func Text(commit func(string) error) *text {
+	return &text{commit: commit}
 }
 
 type text struct {
 	commit func(string) error
+}
+
+func (t text) String() string {
+	return "Text"
 }
 
 func (t *text) Next(dec *json.Decoder) (err error) {
