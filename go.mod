@@ -1,4 +1,4 @@
-module github.com/prymitive/jstream
+module github.com/prymitive/current
 
 go 1.18
 

@@ -1,9 +1,9 @@
-package jstream_test
+package current_test
 
 import (
 	"testing"
 
-	"github.com/prymitive/jstream"
+	"github.com/prymitive/current"
 )
 
 func TestArray(t *testing.T) {
@@ -17,7 +17,7 @@ func TestArray(t *testing.T) {
 	for _, tc := range []testCaseT{
 		{
 			name: "strings",
-			iter: jstream.Array(func(s *string) {
+			iter: current.Array(func(s *string) {
 				got.push(*s)
 			}),
 			body:     `["bob@example.com", "bob@second.com"]`,
@@ -25,7 +25,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "ints",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body:     `[2,3,4,1]`,
@@ -33,7 +33,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "bad array",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body: `[2,3,4,1[`,
@@ -41,7 +41,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "missing ]",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body:     `[2,3,4,1`,
@@ -49,7 +49,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "missing [",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body: `2,3,4,1`,
@@ -57,7 +57,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "missing [",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body: `[2,]`,
@@ -65,7 +65,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "{}",
-			iter: jstream.Array(func(n *int) {
+			iter: current.Array(func(n *int) {
 				got.push(*n)
 			}),
 			body: `{"foo":"bar"}`,
@@ -73,7 +73,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "array of users",
-			iter: jstream.Array(func(u *user) {
+			iter: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}
@@ -91,7 +91,7 @@ func TestArray(t *testing.T) {
 		},
 		{
 			name: "array of users",
-			iter: jstream.Array(func(u *user) {
+			iter: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}
@@ -100,11 +100,11 @@ func TestArray(t *testing.T) {
 	{"name": "bob", "age": 0, "emails": ["bob@example.com"]},
 	[],
 ]`,
-			err: "json: cannot unmarshal array into Go value of type jstream_test.user",
+			err: "json: cannot unmarshal array into Go value of type current_test.user",
 		},
 		{
 			name: "array of users",
-			iter: jstream.Array(func(u *user) {
+			iter: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}

@@ -1,9 +1,9 @@
-package jstream_test
+package current_test
 
 import (
 	"testing"
 
-	"github.com/prymitive/jstream"
+	"github.com/prymitive/current"
 )
 
 func TestObject(t *testing.T) {
@@ -11,31 +11,31 @@ func TestObject(t *testing.T) {
 	for _, tc := range []testCaseT{
 		{
 			name:     "no keys",
-			iter:     jstream.Object(func() {}),
+			iter:     current.Object(func() {}),
 			body:     `{"name": "bob"}`,
 			expected: []any{},
 		},
 		{
 			name: "]",
-			iter: jstream.Object(func() {}),
+			iter: current.Object(func() {}),
 			body: `]`,
 			err:  "invalid character ']' looking for beginning of value",
 		},
 		{
 			name: "{",
-			iter: jstream.Object(func() {}),
+			iter: current.Object(func() {}),
 			body: `{`,
 		},
 		{
 			name: "{}",
-			iter: jstream.Object(func() {}),
+			iter: current.Object(func() {}),
 			body: `{}`,
 		},
 		{
 			name: "name / match",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -44,12 +44,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, age - missing quote",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("age", jstream.Number(func(i float64) {
+				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -58,9 +58,9 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name / no match",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -69,12 +69,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, email / match",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("email", jstream.Text(func(s string) {
+				current.Key("email", current.Text(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -83,12 +83,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name / match, email / no match",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("email", jstream.Text(func(s string) {
+				current.Key("email", current.Text(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -97,12 +97,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, age",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("age", jstream.Number(func(i float64) {
+				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -111,12 +111,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, age - order",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("age", jstream.Number(func(i float64) {
+				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -125,12 +125,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, age / bad number",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("age", jstream.Number(func(i float64) {
+				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -139,15 +139,15 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "name, age, emails",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("name", jstream.Text(func(s string) {
+				current.Key("name", current.Text(func(s string) {
 					got.push(s)
 				})),
-				jstream.Key("age", jstream.Number(func(i float64) {
+				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
-				jstream.Key("emails", jstream.Array(func(s *string) {
+				current.Key("emails", current.Array(func(s *string) {
 					got.push(*s)
 				})),
 			),
@@ -156,9 +156,9 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "user -> {}",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("user", jstream.Object(
+				current.Key("user", current.Object(
 					func() {},
 				)),
 			),
@@ -167,12 +167,12 @@ func TestObject(t *testing.T) {
 		},
 		{
 			name: "user -> {age,email}",
-			iter: jstream.Object(
+			iter: current.Object(
 				func() {},
-				jstream.Key("user", jstream.Object(
+				current.Key("user", current.Object(
 					func() {},
-					jstream.Key("age", jstream.Number(func(f float64) {})),
-					jstream.Key("email", jstream.Text(func(s string) {})),
+					current.Key("age", current.Number(func(f float64) {})),
+					current.Key("email", current.Text(func(s string) {})),
 				)),
 			),
 			body: `{"user": []}`,
