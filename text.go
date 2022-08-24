@@ -2,15 +2,16 @@ package jstream
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
-func Text(commit func(string) error) *text {
+func Text(commit func(string)) *text {
 	return &text{commit: commit}
 }
 
 type text struct {
-	commit func(string) error
+	commit func(string)
 }
 
 func (t text) String() string {
@@ -22,8 +23,10 @@ func (t *text) Next(dec *json.Decoder) (err error) {
 	if tok, err = dec.Token(); err != nil {
 		return err
 	}
-	if err = t.commit(tok.(string)); err != nil {
-		return err
+	if v, ok := tok.(string); ok {
+		t.commit(v)
+	} else {
+		return fmt.Errorf("%w at offset %d decoded by %s, %v is not a string", ErrInvalidToken, dec.InputOffset(), t, tok)
 	}
 	return io.EOF
 }

@@ -31,7 +31,7 @@ func requireToken(dec *json.Decoder, expected json.Token, iter Iterator) error {
 		return err
 	}
 	if got != expected {
-		return fmt.Errorf("%w at offset %d decoded by %s, expected %s, got %s", ErrInvalidToken, dec.InputOffset(), iter, expected, got)
+		return fmt.Errorf("%w at offset %d decoded by %s, expected %s, got %v", ErrInvalidToken, dec.InputOffset(), iter, expected, got)
 	}
 	return nil
 }

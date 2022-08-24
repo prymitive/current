@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-func Map[T any](commit func(k string, v T) error) *jmap[T] {
+func Map[T any](commit func(k string, v T)) *jmap[T] {
 	return &jmap[T]{commit: commit}
 }
 
 type jmap[T any] struct {
 	pos    position
-	commit func(k string, v T) error
+	commit func(k string, v T)
 }
 
 func (m jmap[T]) String() string {
@@ -43,15 +43,8 @@ func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
 			if err = dec.Decode(&val); err != nil {
 				return err
 			}
-			if err = m.commit(key, val); err != nil {
-				return err
-			}
+			m.commit(key, val)
 		}
-	case posLast:
-		if err = requireToken(dec, mapEnd, m); err != nil {
-			return err
-		}
-		return io.EOF
 	}
 	return nil
 }

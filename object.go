@@ -24,14 +24,14 @@ func Key[T Iterator](name string, iter T) *entry[T] {
 	return &entry[T]{name: name, iter: iter}
 }
 
-func Object(commit func() error, keys ...NamedIterator) *object {
+func Object(commit func(), keys ...NamedIterator) *object {
 	return &object{keys: keys, commit: commit}
 }
 
 type object struct {
 	pos    position
 	keys   []NamedIterator
-	commit func() error
+	commit func()
 }
 
 func (o object) String() string {
@@ -39,7 +39,7 @@ func (o object) String() string {
 	for _, key := range o.keys {
 		keys = append(keys, key.Name())
 	}
-	return fmt.Sprintf("Object{%s}", strings.Join(keys, ", "))
+	return fmt.Sprintf("Object{%s}", strings.Join(keys, ","))
 }
 
 func (o *object) Next(dec *json.Decoder) (err error) {
@@ -68,17 +68,9 @@ func (o *object) Next(dec *json.Decoder) (err error) {
 				}
 			}
 		}
-	case posLast:
-		if err = requireToken(dec, mapEnd, o); err != nil {
-			return err
-		}
-		o.pos = posEOF
 	case posEOF:
-		if err = o.commit(); err != nil {
-			return err
-		}
+		o.commit()
 		return io.EOF
-
 	}
 	return nil
 }
