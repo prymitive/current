@@ -11,7 +11,6 @@ func Map[T any](commit func(k string, v T)) *jmap[T] {
 }
 
 type jmap[T any] struct {
-	pos    position
 	commit func(k string, v T)
 }
 
@@ -20,31 +19,26 @@ func (m jmap[T]) String() string {
 	return fmt.Sprintf("Map[%T]", *new(T))
 }
 
-func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
-	switch m.pos {
-	case posFirst:
-		if err = requireToken(dec, mapStart, m); err != nil {
+func (m *jmap[T]) Stream(dec *json.Decoder) (err error) {
+	if err = requireToken(dec, mapStart, m); err != nil {
+		return err
+	}
+
+	var tok json.Token
+	var key string
+	var val T
+	for {
+		if tok, err = dec.Token(); err != nil {
 			return err
 		}
-		m.pos = posDecoding
-	case posDecoding:
-		var tok json.Token
-		var key string
-		var val T
-		for {
-			if tok, err = dec.Token(); err != nil {
-				return err
-			}
-			if tok == mapEnd {
-				return io.EOF
-			}
-			key = tok.(string)
-
-			if err = dec.Decode(&val); err != nil {
-				return err
-			}
-			m.commit(key, val)
+		if tok == mapEnd {
+			return io.EOF
 		}
+		key = tok.(string)
+
+		if err = dec.Decode(&val); err != nil {
+			return err
+		}
+		m.commit(key, val)
 	}
-	return nil
 }

@@ -18,7 +18,7 @@ func (n number) String() string {
 	return "Number"
 }
 
-func (n *number) Next(dec *json.Decoder) (err error) {
+func (n *number) Stream(dec *json.Decoder) (err error) {
 	var tok json.Token
 	if tok, err = dec.Token(); err != nil {
 		return err
