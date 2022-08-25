@@ -7,30 +7,29 @@ import (
 	"strings"
 )
 
-type entry[T Iterator] struct {
+type entry[T Streamer] struct {
 	name string
-	iter T
+	str  T
 }
 
 func (e entry[T]) Name() string {
 	return e.name
 }
 
-func (e *entry[T]) Next(dec *json.Decoder) (err error) {
-	return e.iter.Next(dec)
+func (e *entry[T]) Stream(dec *json.Decoder) (err error) {
+	return e.str.Stream(dec)
 }
 
-func Key[T Iterator](name string, iter T) *entry[T] {
-	return &entry[T]{name: name, iter: iter}
+func Key[T Streamer](name string, str T) *entry[T] {
+	return &entry[T]{name: name, str: str}
 }
 
-func Object(commit func(), keys ...NamedIterator) *object {
+func Object(commit func(), keys ...NamedStreamer) *object {
 	return &object{keys: keys, commit: commit}
 }
 
 type object struct {
-	pos    position
-	keys   []NamedIterator
+	keys   []NamedStreamer
 	commit func()
 }
 
@@ -42,35 +41,27 @@ func (o object) String() string {
 	return fmt.Sprintf("Object{%s}", strings.Join(keys, ","))
 }
 
-func (o *object) Next(dec *json.Decoder) (err error) {
-	switch o.pos {
-	case posFirst:
-		if err = requireToken(dec, mapStart, o); err != nil {
+func (o *object) Stream(dec *json.Decoder) (err error) {
+	if err = requireToken(dec, mapStart, o); err != nil {
+		return err
+	}
+
+	var tok json.Token
+	for {
+		if tok, err = dec.Token(); err != nil {
 			return err
 		}
-		o.pos = posDecoding
-	case posDecoding:
-		var tok json.Token
-		for {
-			if tok, err = dec.Token(); err != nil {
-				return err
-			}
-			if tok == mapEnd {
-				o.pos = posEOF
-				return nil
-			}
-			for _, key := range o.keys {
-				if key.Name() == tok {
-					if err = Stream(dec, key); err != nil {
-						return err
-					}
-					break
+		if tok == mapEnd {
+			o.commit()
+			return io.EOF
+		}
+		for _, key := range o.keys {
+			if key.Name() == tok {
+				if err = Stream(dec, key); err != nil {
+					return err
 				}
+				break
 			}
 		}
-	case posEOF:
-		o.commit()
-		return io.EOF
 	}
-	return nil
 }
