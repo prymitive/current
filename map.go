@@ -27,6 +27,7 @@ func (m *jmap[T]) Stream(dec *json.Decoder) (err error) {
 	var tok json.Token
 	var key string
 	var val T
+	var ok bool
 	for {
 		if tok, err = dec.Token(); err != nil {
 			return err
@@ -36,9 +37,13 @@ func (m *jmap[T]) Stream(dec *json.Decoder) (err error) {
 		}
 		key = tok.(string)
 
-		if err = dec.Decode(&val); err != nil {
+		if tok, err = dec.Token(); err != nil {
 			return err
 		}
-		m.commit(key, val)
+		if val, ok = tok.(T); ok {
+			m.commit(key, val)
+		} else {
+			return fmt.Errorf("%w at offset %d decoded by %s, %q is not a float64", ErrInvalidToken, dec.InputOffset(), m, tok)
+		}
 	}
 }

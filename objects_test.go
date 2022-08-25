@@ -41,9 +41,12 @@ func TestObjects(t *testing.T) {
 					current.Key("age", current.Number(func(v float64) {
 						age = int(v)
 					})),
-					current.Key("emails", current.Array(func(s *string) {
-						emails = append(emails, *s)
-					})),
+					current.Key("emails", current.Objects(
+						func() {},
+						current.Text(func(s string) {
+							emails = append(emails, s)
+						}),
+					)),
 				),
 			),
 			body: `[
