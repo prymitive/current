@@ -3,7 +3,6 @@ package current
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
 func Number(commit func(float64)) *number {
@@ -28,5 +27,5 @@ func (n *number) Stream(dec *json.Decoder) (err error) {
 	} else {
 		return fmt.Errorf("%w at offset %d decoded by %s, %q is not a float64", ErrInvalidToken, dec.InputOffset(), n, tok)
 	}
-	return io.EOF
+	return nil
 }

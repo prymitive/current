@@ -3,7 +3,6 @@ package current
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
 func Map[T any](commit func(k string, v T)) *jmap[T] {
@@ -27,23 +26,22 @@ func (m *jmap[T]) Stream(dec *json.Decoder) (err error) {
 	var tok json.Token
 	var key string
 	var val T
-	var ok bool
-	for {
+	for dec.More() {
 		if tok, err = dec.Token(); err != nil {
 			return err
-		}
-		if tok == mapEnd {
-			return io.EOF
 		}
 		key = tok.(string)
 
-		if tok, err = dec.Token(); err != nil {
+		if err = dec.Decode(&val); err != nil {
 			return err
 		}
-		if val, ok = tok.(T); ok {
-			m.commit(key, val)
-		} else {
-			return fmt.Errorf("%w at offset %d decoded by %s, %q is not a float64", ErrInvalidToken, dec.InputOffset(), m, tok)
-		}
+
+		m.commit(key, val)
 	}
+
+	if err = requireToken(dec, mapEnd, m); err != nil {
+		return err
+	}
+
+	return nil
 }
