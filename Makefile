@@ -33,3 +33,7 @@ test:
 		-count=5 \
 		-timeout=15m \
 		./...
+
+.PHONY: benchmark
+benchmark:
+	go test -v -count=1 -run=none -bench=. -benchmem ./...

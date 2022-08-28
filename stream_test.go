@@ -33,7 +33,7 @@ func runTestCase(t *testing.T, index int, tc testCaseT, got *store) {
 	t.Run(fmt.Sprintf("%d: %s", index, tc.body), func(t *testing.T) {
 		got.reset()
 		dec := json.NewDecoder(strings.NewReader(tc.body))
-		err := current.Stream(dec, tc.str)
+		err := tc.str.Stream(dec)
 		if tc.err != "" {
 			require.EqualError(t, err, tc.err)
 		} else {
