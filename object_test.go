@@ -32,7 +32,7 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
 			),
@@ -42,10 +42,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i float64) {
+				current.Key("age", current.Value(func(i float64, isNull bool) {
 					got.push(i)
 				})),
 			),
@@ -55,7 +55,7 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
 			),
@@ -65,10 +65,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("email", current.Value(func(s string) {
+				current.Key("email", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
 			),
@@ -78,10 +78,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("email", current.Value(func(s string) {
+				current.Key("email", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
 			),
@@ -91,10 +91,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i float64) {
+				current.Key("age", current.Value(func(i float64, isNull bool) {
 					got.push(i)
 				})),
 			),
@@ -104,10 +104,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i float64) {
+				current.Key("age", current.Value(func(i float64, isNull bool) {
 					got.push(i)
 				})),
 			),
@@ -117,10 +117,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i int) {
+				current.Key("age", current.Value(func(i int, isNull bool) {
 					got.push(i)
 				})),
 			),
@@ -130,10 +130,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i float64) {
+				current.Key("age", current.Value(func(i float64, isNull bool) {
 					got.push(i)
 				})),
 				current.Key("emails", current.Array(&email, func() {
@@ -146,10 +146,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Value(func(s string) {
+				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
-				current.Key("age", current.Value(func(i float64) {
+				current.Key("age", current.Value(func(i float64, isNull bool) {
 					got.push(i)
 				})),
 				current.Key("emails", current.Array(&email, func() {
@@ -176,8 +176,8 @@ func TestObject(t *testing.T) {
 				func() {},
 				current.Key("user", current.Object(
 					func() {},
-					current.Key("age", current.Value(func(f float64) {})),
-					current.Key("email", current.Value(func(s string) {})),
+					current.Key("age", current.Value(func(f float64, isNull bool) {})),
+					current.Key("email", current.Value(func(s string, isNull bool) {})),
 				)),
 			),
 			body: `{"user": []}`,

@@ -11,10 +11,11 @@ func Map[T any](commit func(k string, v T)) *jmap[T] {
 
 type jmap[T any] struct {
 	commit func(k string, v T)
+	zero   T
 }
 
 func (m jmap[T]) String() string {
-	return fmt.Sprintf("Map[%T]", *new(T))
+	return fmt.Sprintf("Map[%T]", m.zero)
 }
 
 func (m *jmap[T]) Stream(dec *json.Decoder) (err error) {

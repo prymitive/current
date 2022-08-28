@@ -2,21 +2,17 @@ package current
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 )
 
-var ErrInvalidToken = errors.New("invalid token")
-
 type ErrUnexpectedToken struct {
-	offset   int64
-	str      Streamer
-	expected json.Token
-	got      json.Token
+	offset int64
+	str    Streamer
+	msg    string
 }
 
 func (ut ErrUnexpectedToken) Error() string {
-	return fmt.Sprintf("%s at offset %d decoded by %s, expected %s, got %v", ErrInvalidToken, ut.offset, ut.str, ut.expected, ut.got)
+	return fmt.Sprintf("invalid token at offset %d decoded by %s, %s", ut.offset, ut.str, ut.msg)
 }
 
 var (
@@ -33,10 +29,9 @@ func requireToken(dec *json.Decoder, expected json.Token, str Streamer) error {
 	}
 	if got != expected {
 		return ErrUnexpectedToken{
-			offset:   dec.InputOffset(),
-			str:      str,
-			expected: expected,
-			got:      got,
+			offset: dec.InputOffset(),
+			str:    str,
+			msg:    fmt.Sprintf("expected %s, got %v", expected, got),
 		}
 	}
 	return nil

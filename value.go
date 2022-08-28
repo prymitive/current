@@ -5,16 +5,17 @@ import (
 	"fmt"
 )
 
-func Value[T any](commit func(T)) *value[T] {
+func Value[T any](commit func(T, bool)) *value[T] {
 	return &value[T]{commit: commit}
 }
 
 type value[T any] struct {
-	commit func(T)
+	commit func(T, bool)
+	zero   T
 }
 
 func (n value[T]) String() string {
-	return fmt.Sprintf("Value[%T]", *new(T))
+	return fmt.Sprintf("Value[%T]", n.zero)
 }
 
 func (n *value[T]) Stream(dec *json.Decoder) (err error) {
@@ -24,15 +25,20 @@ func (n *value[T]) Stream(dec *json.Decoder) (err error) {
 	}
 
 	if tok == nil {
-		var zero T
-		n.commit(zero)
+		n.commit(n.zero, true)
 		return nil
 	}
 
-	if v, ok := tok.(T); ok {
-		n.commit(v)
+	var v T
+	var ok bool
+	if v, ok = tok.(T); ok {
+		n.commit(v, false)
 	} else {
-		return fmt.Errorf("%w at offset %d decoded by %s, %q is not a %T", ErrInvalidToken, dec.InputOffset(), n, tok, *new(T))
+		return ErrUnexpectedToken{
+			offset: dec.InputOffset(),
+			str:    n,
+			msg:    fmt.Sprintf("%q is not a %T", tok, n.zero),
+		}
 	}
 	return nil
 }
