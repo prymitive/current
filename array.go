@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-func Array[T any](commit func(*T) error) *array[T] {
+func Array[T any](commit func(*T)) *array[T] {
 	return &array[T]{commit: commit}
 }
 
 type array[T any] struct {
 	pos    position
-	commit func(*T) error
+	commit func(*T)
 }
 
 func (a array[T]) String() string {
@@ -34,9 +34,7 @@ func (a *array[T]) Next(dec *json.Decoder) (err error) {
 			if err != nil {
 				return err
 			}
-			if err = a.commit(&elem); err != nil {
-				return err
-			}
+			a.commit(&elem)
 		}
 		a.pos = posLast
 	case posLast:
