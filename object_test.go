@@ -32,7 +32,7 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -42,10 +42,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -55,7 +55,7 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -65,10 +65,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("email", current.Text(func(s string) {
+				current.Key("email", current.Value(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -78,10 +78,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("email", current.Text(func(s string) {
+				current.Key("email", current.Value(func(s string) {
 					got.push(s)
 				})),
 			),
@@ -91,10 +91,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -104,10 +104,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i float64) {
 					got.push(i)
 				})),
 			),
@@ -117,23 +117,23 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i int) {
 					got.push(i)
 				})),
 			),
 			body: `{"name": "bob", "age": "foo"}`,
-			err:  `invalid token at offset 28 decoded by Number, "foo" is not a float64`,
+			err:  `invalid token at offset 28 decoded by Value[int], "foo" is not a int`,
 		},
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i float64) {
 					got.push(i)
 				})),
 				current.Key("emails", current.Array(&email, func() {
@@ -146,10 +146,10 @@ func TestObject(t *testing.T) {
 		{
 			str: current.Object(
 				func() {},
-				current.Key("name", current.Text(func(s string) {
+				current.Key("name", current.Value(func(s string) {
 					got.push(s)
 				})),
-				current.Key("age", current.Number(func(i float64) {
+				current.Key("age", current.Value(func(i float64) {
 					got.push(i)
 				})),
 				current.Key("emails", current.Array(&email, func() {
@@ -176,8 +176,8 @@ func TestObject(t *testing.T) {
 				func() {},
 				current.Key("user", current.Object(
 					func() {},
-					current.Key("age", current.Number(func(f float64) {})),
-					current.Key("email", current.Text(func(s string) {})),
+					current.Key("age", current.Value(func(f float64) {})),
+					current.Key("email", current.Value(func(s string) {})),
 				)),
 			),
 			body: `{"user": []}`,
