@@ -8,32 +8,27 @@ import (
 
 func TestObject(t *testing.T) {
 	var got store
-	for _, tc := range []testCaseT{
+	for i, tc := range []testCaseT{
 		{
-			name:     "no keys",
-			iter:     current.Object(func() {}),
+			str:      current.Object(func() {}),
 			body:     `{"name": "bob"}`,
 			expected: []any{},
 		},
 		{
-			name: "]",
-			iter: current.Object(func() {}),
+			str:  current.Object(func() {}),
 			body: `]`,
 			err:  "invalid character ']' looking for beginning of value",
 		},
 		{
-			name: "{",
-			iter: current.Object(func() {}),
+			str:  current.Object(func() {}),
 			body: `{`,
 		},
 		{
-			name: "{}",
-			iter: current.Object(func() {}),
+			str:  current.Object(func() {}),
 			body: `{}`,
 		},
 		{
-			name: "name / match",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -43,8 +38,7 @@ func TestObject(t *testing.T) {
 			expected: []any{"bob"},
 		},
 		{
-			name: "name, age - missing quote",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -57,8 +51,7 @@ func TestObject(t *testing.T) {
 			err:  "invalid character 'a' looking for beginning of object key string",
 		},
 		{
-			name: "name / no match",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -68,8 +61,7 @@ func TestObject(t *testing.T) {
 			expected: []any{},
 		},
 		{
-			name: "name, email / match",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -82,8 +74,7 @@ func TestObject(t *testing.T) {
 			expected: []any{"bob", "bob@example.com"},
 		},
 		{
-			name: "name / match, email / no match",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -96,8 +87,7 @@ func TestObject(t *testing.T) {
 			expected: []any{"bob"},
 		},
 		{
-			name: "name, age",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -110,8 +100,7 @@ func TestObject(t *testing.T) {
 			expected: []any{"bob", 4.0},
 		},
 		{
-			name: "name, age - order",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -124,8 +113,7 @@ func TestObject(t *testing.T) {
 			expected: []any{4.0, "bob"},
 		},
 		{
-			name: "name, age / bad number",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -138,8 +126,7 @@ func TestObject(t *testing.T) {
 			err:  `invalid token at offset 28 decoded by Number, "foo" is not a float64`,
 		},
 		{
-			name: "name, age, emails",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("name", current.Text(func(s string) {
 					got.push(s)
@@ -155,8 +142,25 @@ func TestObject(t *testing.T) {
 			expected: []any{"bob", "one", "two", 0.0},
 		},
 		{
-			name: "user -> {}",
-			iter: current.Object(
+			str: current.Object(
+				func() {},
+				current.Key("name", current.Text(func(s string) {
+					got.push(s)
+				})),
+				current.Key("age", current.Number(func(i float64) {
+					got.push(i)
+				})),
+				current.Key("emails", current.Array(func(s *string) {
+					got.push(*s)
+				})),
+			),
+			body: `
+				{"name": "bob", "emails": ["one", "two"], "age": 5},
+				{"name": "not", "emails": ["three"], "age": 0}`,
+			expected: []any{"bob", "one", "two", 5.0},
+		},
+		{
+			str: current.Object(
 				func() {},
 				current.Key("user", current.Object(
 					func() {},
@@ -166,8 +170,7 @@ func TestObject(t *testing.T) {
 			err:  "invalid token at offset 10 decoded by Object{}, expected {, got [",
 		},
 		{
-			name: "user -> {age,email}",
-			iter: current.Object(
+			str: current.Object(
 				func() {},
 				current.Key("user", current.Object(
 					func() {},
@@ -179,6 +182,6 @@ func TestObject(t *testing.T) {
 			err:  "invalid token at offset 10 decoded by Object{age,email}, expected {, got [",
 		},
 	} {
-		runTestCase(t, tc, &got)
+		runTestCase(t, i, tc, &got)
 	}
 }

@@ -14,66 +14,58 @@ func TestArray(t *testing.T) {
 	}
 
 	var got store
-	for _, tc := range []testCaseT{
+	for i, tc := range []testCaseT{
 		{
-			name: "strings",
-			iter: current.Array(func(s *string) {
+			str: current.Array(func(s *string) {
 				got.push(*s)
 			}),
 			body:     `["bob@example.com", "bob@second.com"]`,
 			expected: []any{"bob@example.com", "bob@second.com"},
 		},
 		{
-			name: "ints",
-			iter: current.Array(func(n *int) {
-				got.push(*n)
+			str: current.Array(func(n *float64) {
+				got.push(int(*n))
 			}),
 			body:     `[2,3,4,1]`,
 			expected: []any{2, 3, 4, 1},
 		},
 		{
-			name: "bad array",
-			iter: current.Array(func(n *int) {
-				got.push(*n)
+			str: current.Array(func(n *float64) {
+				got.push(int(*n))
 			}),
 			body: `[2,3,4,1[`,
 			err:  "expected comma after array element",
 		},
 		{
-			name: "missing ]",
-			iter: current.Array(func(n *int) {
+			str: current.Array(func(n *float64) {
 				got.push(*n)
 			}),
 			body:     `[2,3,4,1`,
-			expected: []any{2, 3, 4, 1},
+			expected: []any{2.0, 3.0, 4.0, 1.0},
 		},
 		{
-			name: "missing [",
-			iter: current.Array(func(n *int) {
+			str: current.Array(func(n *float64) {
 				got.push(*n)
 			}),
 			body: `2,3,4,1`,
-			err:  "invalid token at offset 1 decoded by Array[int], expected [, got 2",
+			err:  "invalid token at offset 1 decoded by Array[float64], expected [, got 2",
 		},
 		{
-			name: "missing [",
-			iter: current.Array(func(n *int) {
+			str: current.Array(func(n *float64) {
 				got.push(*n)
 			}),
 			body: `[2,]`,
 			err:  "invalid character ']' looking for beginning of value",
 		},
 		{
-			name: "{}",
-			iter: current.Array(func(n *int) {
+			str: current.Array(func(n *float64) {
 				got.push(*n)
 			}),
 			body: `{"foo":"bar"}`,
-			err:  "invalid token at offset 1 decoded by Array[int], expected [, got {",
+			err:  "invalid token at offset 1 decoded by Array[float64], expected [, got {",
 		},
 		{
-			name: "array of users",
-			iter: current.Array(func(u *user) {
+			str: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}
@@ -90,8 +82,7 @@ func TestArray(t *testing.T) {
 			},
 		},
 		{
-			name: "array of users",
-			iter: current.Array(func(u *user) {
+			str: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}
@@ -103,8 +94,7 @@ func TestArray(t *testing.T) {
 			err: "json: cannot unmarshal array into Go value of type current_test.user",
 		},
 		{
-			name: "array of users",
-			iter: current.Array(func(u *user) {
+			str: current.Array(func(u *user) {
 				got.push(*u)
 				u.Age = 0
 				u.Emails = []string{}
@@ -116,6 +106,6 @@ func TestArray(t *testing.T) {
 			err: "invalid character '[' looking for beginning of object key string",
 		},
 	} {
-		runTestCase(t, tc, &got)
+		runTestCase(t, i, tc, &got)
 	}
 }
