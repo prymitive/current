@@ -21,17 +21,7 @@ jobs:
           go-version: 1.19
 
       - name: Test
-        run: |
-          mkdir -p .cover
-          echo 'mode: atomic' > .cover/coverage.out
-          go test \
-                -covermode=atomic \
-                -coverprofile=.cover/coverage.out \
-                -coverpkg=./... \
-                -race \
-                -count=5 \
-                -timeout=10m \
-                ./...
+        run: make test
 
       - name: Check for local changes
         run: git diff --exit-code
