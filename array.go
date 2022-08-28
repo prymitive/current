@@ -18,7 +18,6 @@ type array[T any] struct {
 }
 
 func (a array[T]) String() string {
-	// nolint: gocritic
 	return fmt.Sprintf("Array[%T]", *new(T))
 }
 

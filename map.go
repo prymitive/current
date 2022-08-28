@@ -14,7 +14,6 @@ type jmap[T any] struct {
 }
 
 func (m jmap[T]) String() string {
-	// nolint: gocritic
 	return fmt.Sprintf("Map[%T]", *new(T))
 }
 
