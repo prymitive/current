@@ -43,8 +43,6 @@ func (a *array[T]) Next(dec *json.Decoder) (err error) {
 		if err = requireToken(dec, arrayEnd, a); err != nil {
 			return err
 		}
-		a.pos = posEOF
-	case posEOF:
 		return io.EOF
 	}
 	return nil

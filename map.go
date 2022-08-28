@@ -36,8 +36,7 @@ func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
 				return err
 			}
 			if tok == mapEnd {
-				m.pos = posEOF
-				return nil
+				return io.EOF
 			}
 			key = tok.(string)
 
@@ -52,8 +51,6 @@ func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
 		if err = requireToken(dec, mapEnd, m); err != nil {
 			return err
 		}
-		m.pos = posEOF
-	case posEOF:
 		return io.EOF
 	}
 	return nil
