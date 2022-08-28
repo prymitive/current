@@ -3,7 +3,6 @@ package current
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"strings"
 )
 
@@ -53,11 +52,11 @@ func (o *object) Stream(dec *json.Decoder) (err error) {
 		}
 		if tok == mapEnd {
 			o.commit()
-			return io.EOF
+			return nil
 		}
 		for _, key := range o.keys {
 			if key.Name() == tok {
-				if err = Stream(dec, key); err != nil {
+				if err = key.Stream(dec); err != nil {
 					return err
 				}
 				break

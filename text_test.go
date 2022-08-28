@@ -1,9 +1,12 @@
 package current_test
 
 import (
+	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/prymitive/current"
+	"github.com/stretchr/testify/require"
 )
 
 func TestText(t *testing.T) {
@@ -38,5 +41,52 @@ func TestText(t *testing.T) {
 			got.push(s)
 		})
 		runTestCase(t, i, tc, &got)
+	}
+}
+
+func BenchmarkText(b *testing.B) {
+	b.ReportAllocs()
+
+	var got string
+
+	for _, tc := range []struct {
+		title    string
+		str      current.Streamer
+		body     string
+		expected string
+	}{
+		{
+			str: current.Text(func(s string) {
+				got = s
+			}),
+			body:     `"foo"`,
+			expected: "foo",
+		},
+		{
+			str:      current.Text(func(s string) {}),
+			body:     `"foo"`,
+			expected: "foo",
+		},
+		{
+			str: current.Text(func(s string) {
+				got = s
+			}),
+			body:     `"foo bar baz alice bob"`,
+			expected: "foo bar baz alice bob",
+		},
+	} {
+		b.Run(tc.title, func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				b.StopTimer()
+				r := strings.NewReader(tc.body)
+				dec := json.NewDecoder(r)
+				var err error
+				b.StartTimer()
+				err = tc.str.Stream(dec)
+				b.StopTimer()
+				require.NoError(b, err)
+				require.Equal(b, tc.expected, got)
+			}
+		})
 	}
 }

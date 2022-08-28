@@ -3,15 +3,18 @@ package current
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
-func Array[T any](commit func(*T)) *array[T] {
-	return &array[T]{commit: commit}
+func Array[T any](dst *T, commit func()) *array[T] {
+	return &array[T]{
+		dst:    dst,
+		commit: commit,
+	}
 }
 
 type array[T any] struct {
-	commit func(*T)
+	dst    *T
+	commit func()
 }
 
 func (a array[T]) String() string {
@@ -24,18 +27,17 @@ func (a *array[T]) Stream(dec *json.Decoder) (err error) {
 		return err
 	}
 
-	var elem T
 	for dec.More() {
-		err = dec.Decode(&elem)
+		err = dec.Decode(a.dst)
 		if err != nil {
 			return err
 		}
-		a.commit(&elem)
+		a.commit()
 	}
 
 	if err = requireToken(dec, arrayEnd, a); err != nil {
 		return err
 	}
 
-	return io.EOF
+	return nil
 }

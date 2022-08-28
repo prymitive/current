@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 )
 
 var ErrInvalidToken = errors.New("invalid token")
@@ -50,12 +49,4 @@ type Streamer interface {
 type NamedStreamer interface {
 	Name() string
 	Streamer
-}
-
-func Stream(dec *json.Decoder, str Streamer) (err error) {
-	err = str.Stream(dec)
-	if errors.Is(err, io.EOF) {
-		return nil
-	}
-	return err
 }

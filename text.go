@@ -3,7 +3,6 @@ package current
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
 func Text(commit func(string)) *text {
@@ -28,5 +27,5 @@ func (t *text) Stream(dec *json.Decoder) (err error) {
 	} else {
 		return fmt.Errorf("%w at offset %d decoded by %s, %v is not a string", ErrInvalidToken, dec.InputOffset(), t, tok)
 	}
-	return io.EOF
+	return nil
 }

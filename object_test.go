@@ -8,6 +8,7 @@ import (
 
 func TestObject(t *testing.T) {
 	var got store
+	var email string
 	for i, tc := range []testCaseT{
 		{
 			str:      current.Object(func() {}),
@@ -22,6 +23,7 @@ func TestObject(t *testing.T) {
 		{
 			str:  current.Object(func() {}),
 			body: `{`,
+			err:  "EOF",
 		},
 		{
 			str:  current.Object(func() {}),
@@ -134,8 +136,8 @@ func TestObject(t *testing.T) {
 				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
-				current.Key("emails", current.Array(func(s *string) {
-					got.push(*s)
+				current.Key("emails", current.Array(&email, func() {
+					got.push(email)
 				})),
 			),
 			body:     `{"name": "bob", "emails": ["one", "two"], "age": 0}`,
@@ -150,13 +152,13 @@ func TestObject(t *testing.T) {
 				current.Key("age", current.Number(func(i float64) {
 					got.push(i)
 				})),
-				current.Key("emails", current.Array(func(s *string) {
-					got.push(*s)
+				current.Key("emails", current.Array(&email, func() {
+					got.push(email)
 				})),
 			),
 			body: `
-				{"name": "bob", "emails": ["one", "two"], "age": 5},
-				{"name": "not", "emails": ["three"], "age": 0}`,
+					{"name": "bob", "emails": ["one", "two"], "age": 5},
+					{"name": "not", "emails": ["three"], "age": 0}`,
 			expected: []any{"bob", "one", "two", 5.0},
 		},
 		{
