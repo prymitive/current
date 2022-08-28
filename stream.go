@@ -7,9 +7,7 @@ import (
 	"io"
 )
 
-var (
-	ErrInvalidToken = errors.New("invalid token")
-)
+var ErrInvalidToken = errors.New("invalid token")
 
 type position string
 
@@ -27,13 +25,13 @@ var (
 	mapEnd     = json.Delim('}')
 )
 
-func requireToken(dec *json.Decoder, expected json.Token) error {
+func requireToken(dec *json.Decoder, expected json.Token, iter Iterator) error {
 	got, err := dec.Token()
 	if err != nil {
 		return err
 	}
 	if got != expected {
-		return fmt.Errorf("%w, expected %s, got %s", ErrInvalidToken, expected, got)
+		return fmt.Errorf("%w at offset %d decoded by %s, expected %s, got %s", ErrInvalidToken, dec.InputOffset(), iter, expected, got)
 	}
 	return nil
 }
@@ -50,11 +48,10 @@ type NamedIterator interface {
 func Stream(dec *json.Decoder, iter Iterator) (err error) {
 	for {
 		err = iter.Next(dec)
-
-		switch err {
-		case io.EOF:
+		switch {
+		case errors.Is(err, io.EOF):
 			return nil
-		case nil:
+		case err == nil:
 			continue
 		default:
 			return err

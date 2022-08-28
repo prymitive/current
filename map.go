@@ -2,23 +2,28 @@ package jstream
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
-func Map[T any](commit func(map[string]T) error) jmap[T] {
-	return jmap[T]{}
+func Map[T any](commit func(k string, v T) error) *jmap[T] {
+	return &jmap[T]{commit: commit}
 }
 
 type jmap[T any] struct {
 	pos    position
-	commit func(map[string]T) error
+	commit func(k string, v T) error
+}
+
+func (m jmap[T]) String() string {
+	// nolint: gocritic
+	return fmt.Sprintf("Map[%T]", *new(T))
 }
 
 func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
-	data := map[string]T{}
 	switch m.pos {
 	case posFirst:
-		if err = requireToken(dec, mapStart); err != nil {
+		if err = requireToken(dec, mapStart, m); err != nil {
 			return err
 		}
 		m.pos = posDecoding
@@ -32,25 +37,23 @@ func (m *jmap[T]) Next(dec *json.Decoder) (err error) {
 			}
 			if tok == mapEnd {
 				m.pos = posEOF
-				break
+				return nil
 			}
 			key = tok.(string)
 
 			if err = dec.Decode(&val); err != nil {
 				return err
 			}
-			data[key] = val
+			if err = m.commit(key, val); err != nil {
+				return err
+			}
 		}
-		m.pos = posLast
 	case posLast:
-		if err = requireToken(dec, mapEnd); err != nil {
+		if err = requireToken(dec, mapEnd, m); err != nil {
 			return err
 		}
 		m.pos = posEOF
 	case posEOF:
-		if err = m.commit(data); err != nil {
-			return err
-		}
 		return io.EOF
 	}
 	return nil
