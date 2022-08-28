@@ -1,4 +1,4 @@
-package jstream
+package current
 
 import (
 	"encoding/json"

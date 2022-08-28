@@ -1,11 +1,11 @@
-package jstream_test
+package current_test
 
 import (
 	"encoding/json"
 	"strings"
 	"testing"
 
-	"github.com/prymitive/jstream"
+	"github.com/prymitive/current"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +23,7 @@ func (s *store) reset() {
 
 type testCaseT struct {
 	name     string
-	iter     jstream.Iterator
+	iter     current.Iterator
 	body     string
 	expected []any
 	err      string
@@ -33,7 +33,7 @@ func runTestCase(t *testing.T, tc testCaseT, got *store) {
 	t.Run(tc.name, func(t *testing.T) {
 		got.reset()
 		dec := json.NewDecoder(strings.NewReader(tc.body))
-		err := jstream.Stream(dec, tc.iter)
+		err := current.Stream(dec, tc.iter)
 		if tc.err != "" {
 			require.EqualError(t, err, tc.err)
 		} else {

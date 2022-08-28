@@ -1,9 +1,9 @@
-package jstream_test
+package current_test
 
 import (
 	"testing"
 
-	"github.com/prymitive/jstream"
+	"github.com/prymitive/current"
 )
 
 func TestText(t *testing.T) {
@@ -11,7 +11,7 @@ func TestText(t *testing.T) {
 	for _, tc := range []testCaseT{
 		{
 			name: "foo",
-			iter: jstream.Text(func(s string) {
+			iter: current.Text(func(s string) {
 				got.push(s)
 			}),
 			body:     `"foo"`,
@@ -19,7 +19,7 @@ func TestText(t *testing.T) {
 		},
 		{
 			name: "foo",
-			iter: jstream.Text(func(s string) {
+			iter: current.Text(func(s string) {
 				got.push(s)
 			}),
 			body: `foo`,
@@ -27,7 +27,7 @@ func TestText(t *testing.T) {
 		},
 		{
 			name: "123",
-			iter: jstream.Text(func(s string) {
+			iter: current.Text(func(s string) {
 				got.push(s)
 			}),
 			body: `123`,
@@ -35,7 +35,7 @@ func TestText(t *testing.T) {
 		},
 		{
 			name: "{}",
-			iter: jstream.Text(func(s string) {
+			iter: current.Text(func(s string) {
 				got.push(s)
 			}),
 			body: `{}`,
@@ -43,7 +43,7 @@ func TestText(t *testing.T) {
 		},
 		{
 			name: "foo",
-			iter: jstream.Text(func(s string) {
+			iter: current.Text(func(s string) {
 				got.push(s)
 			}),
 			body: `"foo`,

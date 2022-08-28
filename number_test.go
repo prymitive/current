@@ -1,9 +1,9 @@
-package jstream_test
+package current_test
 
 import (
 	"testing"
 
-	"github.com/prymitive/jstream"
+	"github.com/prymitive/current"
 )
 
 func TestNumber(t *testing.T) {
@@ -11,7 +11,7 @@ func TestNumber(t *testing.T) {
 	for _, tc := range []testCaseT{
 		{
 			name: "123",
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body:     `123`,
@@ -19,7 +19,7 @@ func TestNumber(t *testing.T) {
 		},
 		{
 			name: "123.5",
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body:     `123.5`,
@@ -27,7 +27,7 @@ func TestNumber(t *testing.T) {
 		},
 		{
 			name: `"123"`,
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body: `"123"`,
@@ -35,7 +35,7 @@ func TestNumber(t *testing.T) {
 		},
 		{
 			name: "{}",
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body: "{}",
@@ -43,7 +43,7 @@ func TestNumber(t *testing.T) {
 		},
 		{
 			name: "1[",
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body:     `1[`,
@@ -51,7 +51,7 @@ func TestNumber(t *testing.T) {
 		},
 		{
 			name: "foo",
-			iter: jstream.Number(func(v float64) {
+			iter: current.Number(func(v float64) {
 				got.push(v)
 			}),
 			body: `"foo`,
