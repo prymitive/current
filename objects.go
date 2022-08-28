@@ -2,7 +2,6 @@ package current
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 )
@@ -26,15 +25,10 @@ func (o *objects) Stream(dec *json.Decoder) (err error) {
 		return err
 	}
 
-	var unErr ErrUnexpectedToken
-	for {
+	for dec.More() {
 		if err = Stream(dec, o.str); err != nil {
-			if errors.As(err, &unErr) {
-				if unErr.expected == mapStart && unErr.got == arrayEnd {
-					return io.EOF
-				}
-			}
 			return err
 		}
 	}
+	return io.EOF
 }

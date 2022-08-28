@@ -10,37 +10,44 @@ func TestMap(t *testing.T) {
 	var got store
 	for i, tc := range []testCaseT{
 		{
-			str:  current.Map(func(k string, v int) {}),
+			str:  current.Map(func(k string, v float64) {}),
 			body: `"foo"`,
-			err:  "invalid token at offset 5 decoded by Map[int], expected {, got foo",
+			err:  "invalid token at offset 5 decoded by Map[float64], expected {, got foo",
 		},
 		{
-			str:  current.Map(func(k string, v int) {}),
+			str:  current.Map(func(k string, v float64) {}),
 			body: `[]`,
-			err:  "invalid token at offset 1 decoded by Map[int], expected {, got [",
+			err:  "invalid token at offset 1 decoded by Map[float64], expected {, got [",
 		},
 		{
-			str:  current.Map(func(k string, v int) {}),
+			str:  current.Map(func(k string, v float64) {}),
 			body: `{{}}`,
 			err:  "invalid character '{'",
 		},
 		{
-			str:  current.Map(func(k string, v int) {}),
+			str:  current.Map(func(k string, v float64) {}),
 			body: `{}`,
 		},
 		{
-			str: current.Map(func(k string, v int) {
-				got.push(map[string]int{k: v})
+			str: current.Map(func(k string, v float64) {
+				got.push(map[string]float64{k: v})
 			}),
 			body:     `{"foo": 1, "bar": 2}`,
-			expected: []any{map[string]int{"foo": 1}, map[string]int{"bar": 2}},
+			expected: []any{map[string]float64{"foo": 1}, map[string]float64{"bar": 2}},
 		},
 		{
-			str: current.Map(func(k string, v int) {
-				got.push(map[string]int{k: v})
+			str: current.Map(func(k string, v float64) {
+				got.push(map[string]float64{k: v})
 			}),
 			body: `{"foo": 1, "bar": "2"}`,
-			err:  "json: cannot unmarshal string into Go value of type int",
+			err:  `invalid token at offset 21 decoded by Map[float64], "2" is not a float64`,
+		},
+		{
+			str: current.Map(func(k string, v float64) {
+				got.push(map[string]float64{k: v})
+			}),
+			body: `{"foo": 1, "bar": }}`,
+			err:  "invalid character '}' looking for beginning of value",
 		},
 	} {
 		runTestCase(t, i, tc, &got)
