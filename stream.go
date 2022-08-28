@@ -9,14 +9,16 @@ import (
 
 var ErrInvalidToken = errors.New("invalid token")
 
-type position int
+type ErrUnexpectedToken struct {
+	offset   int64
+	str      Streamer
+	expected json.Token
+	got      json.Token
+}
 
-const (
-	posFirst position = iota
-	posDecoding
-	posLast
-	posEOF
-)
+func (ut ErrUnexpectedToken) Error() string {
+	return fmt.Sprintf("%s at offset %d decoded by %s, expected %s, got %v", ErrInvalidToken, ut.offset, ut.str, ut.expected, ut.got)
+}
 
 var (
 	arrayStart = json.Delim('[')
@@ -25,36 +27,35 @@ var (
 	mapEnd     = json.Delim('}')
 )
 
-func requireToken(dec *json.Decoder, expected json.Token, iter Iterator) error {
+func requireToken(dec *json.Decoder, expected json.Token, str Streamer) error {
 	got, err := dec.Token()
 	if err != nil {
 		return err
 	}
 	if got != expected {
-		return fmt.Errorf("%w at offset %d decoded by %s, expected %s, got %v", ErrInvalidToken, dec.InputOffset(), iter, expected, got)
+		return ErrUnexpectedToken{
+			offset:   dec.InputOffset(),
+			str:      str,
+			expected: expected,
+			got:      got,
+		}
 	}
 	return nil
 }
 
-type Iterator interface {
-	Next(*json.Decoder) error
+type Streamer interface {
+	Stream(*json.Decoder) error
 }
 
-type NamedIterator interface {
+type NamedStreamer interface {
 	Name() string
-	Iterator
+	Streamer
 }
 
-func Stream(dec *json.Decoder, iter Iterator) (err error) {
-	for {
-		err = iter.Next(dec)
-		switch {
-		case errors.Is(err, io.EOF):
-			return nil
-		case err == nil:
-			continue
-		default:
-			return err
-		}
+func Stream(dec *json.Decoder, str Streamer) (err error) {
+	err = str.Stream(dec)
+	if errors.Is(err, io.EOF) {
+		return nil
 	}
+	return err
 }
