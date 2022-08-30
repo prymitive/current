@@ -5,6 +5,12 @@ import (
 	"fmt"
 )
 
+// Value holds a single value, usually used with an Object to read
+// object keys of different type.
+// commit() funcion will be called after value was decoded and it will
+// receive two parameters:
+// - decoded value
+// - bool that will be true if the decoded value was nil
 func Value[T any](commit func(T, bool)) *value[T] {
 	return &value[T]{commit: commit}
 }

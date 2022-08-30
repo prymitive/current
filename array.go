@@ -15,37 +15,36 @@ import (
 //
 // Example:
 //
-//		type User struct {
-//			Name   string
-//			Age    int
-//			Emails []string
-//		}
+//	type User struct {
+//		Name   string
+//		Age    int
+//		Emails []string
+//	}
 //
-//		r := strings.NewReader(`[
-//			{"name": "bob", "age": 40, "emails": ["bob1@example.com","bob2@example.com","bob3@example.com"]},
+//	r := strings.NewReader(`[
+//		{"name": "bob", "age": 40, "emails": ["bob1@example.com","bob2@example.com","bob3@example.com"]},
 //	 	{"name": "alice", "age": 34, "emails": ["alice@example.com"]}
-//		]`)
+//	]`)
 //
-// // Create a new json.Decoder for our reader
-// dec := json.NewDecoder(r)
+//	// Create a new json.Decoder for our reader
+//	dec := json.NewDecoder(r)
 //
-// // user will be used to unmarshal all elements
-// var user User
-// // users will store all decoded users
-// users := []User{}
+//	// user will be used to unmarshal all elements
+//	var user User
+//	// users will store all decoded users
+//	users := []User{}
 //
-//	 streamer := current.Array(
+//	streamer := current.Array(
 //		&user,
 //		func() {
-//		    users = append(got, user)
-//	     	// We don't need to reset other fields since our JSON body
-//	     	// always passes name & age, so those struct fields are overwritten
-//	     	// but we do need to reset emails slice so it's always empty at the
-//	     	// beginning of unmarshal.
+//			users = append(got, user)
+//			// We don't need to reset other fields since our JSON body
+//			// always passes name & age, so those struct fields are overwritten
+//			// but we do need to reset emails slice so it's always empty at the
+//			// beginning of unmarshal.
 //			user.Emails = []string{}
 //		}
-//
-// // Decode the en
+//	)
 //
 //	if err := str.Stream(dec); err != nil {
 //	    panic(err)
