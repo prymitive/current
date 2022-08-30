@@ -11,27 +11,26 @@ func TestObject(t *testing.T) {
 	var email string
 	for i, tc := range []testCaseT{
 		{
-			str:      current.Object(func() {}),
+			str:      current.Object(),
 			body:     `{"name": "bob"}`,
 			expected: []any{},
 		},
 		{
-			str:  current.Object(func() {}),
+			str:  current.Object(),
 			body: `]`,
 			err:  "invalid character ']' looking for beginning of value",
 		},
 		{
-			str:  current.Object(func() {}),
+			str:  current.Object(),
 			body: `{`,
 			err:  "EOF",
 		},
 		{
-			str:  current.Object(func() {}),
+			str:  current.Object(),
 			body: `{}`,
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -41,7 +40,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -54,7 +52,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -64,7 +61,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -77,7 +73,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -90,7 +85,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -103,7 +97,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -116,7 +109,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -129,7 +121,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -145,7 +136,6 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("name", current.Value(func(s string, isNull bool) {
 					got.push(s)
 				})),
@@ -163,19 +153,14 @@ func TestObject(t *testing.T) {
 		},
 		{
 			str: current.Object(
-				func() {},
-				current.Key("user", current.Object(
-					func() {},
-				)),
+				current.Key("user", current.Object()),
 			),
 			body: `{"user": []}`,
 			err:  "invalid token at offset 10 decoded by Object{}, expected {, got [",
 		},
 		{
 			str: current.Object(
-				func() {},
 				current.Key("user", current.Object(
-					func() {},
 					current.Key("age", current.Value(func(f float64, isNull bool) {})),
 					current.Key("email", current.Value(func(s string, isNull bool) {})),
 				)),

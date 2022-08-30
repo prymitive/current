@@ -11,6 +11,19 @@ import (
 // receive two parameters:
 // - decoded value
 // - bool that will be true if the decoded value was nil
+//
+// Example:
+//
+// Let's say we want to decode {"name": "bob"} and get the value of "name" key.
+//
+//	current.Object(
+//		func() {},
+//		current.Key("name", current.Value(func(s string, isNull bool) {
+//			fmt.Printf("name is %q", s)
+//		}),
+//	)
+//
+// revive:disable:unexported-return
 func Value[T any](commit func(T, bool)) *value[T] {
 	return &value[T]{commit: commit}
 }
