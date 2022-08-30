@@ -5,6 +5,22 @@ import (
 	"fmt"
 )
 
+// Map decodes a json object into a simple map[string]T
+// It takes a list of current.Key instances for each of the keys you
+// want to decode.
+// Example:
+//
+// Let's say we want to decode:
+//
+// {"tags" : {"name": "bob", "alias": "b"}}
+//
+//	current.Object(
+//		current.Key("tags", current.Map(func(k,v string) {
+//			fmt.Printf("tag %s=%s", k,v)
+//		}),
+//	)
+//
+// revive:disable:unexported-return
 func Map[T any](commit func(k string, v T)) *jmap[T] {
 	return &jmap[T]{commit: commit}
 }

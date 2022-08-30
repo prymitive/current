@@ -49,6 +49,8 @@ import (
 //	if err := str.Stream(dec); err != nil {
 //	    panic(err)
 //	}
+//
+// revive:disable:unexported-return
 func Array[T any](dst *T, commit func()) *array[T] {
 	return &array[T]{
 		dst:    dst,
