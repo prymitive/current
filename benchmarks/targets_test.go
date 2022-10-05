@@ -94,7 +94,6 @@ func parseTargetsCurrent(r io.Reader) (targets []ActiveTarget, err error) {
 	targets = []ActiveTarget{}
 	var target ActiveTarget
 	decoder := current.Object(
-		func() {},
 		current.Key("activeTargets", current.Array(&target, func() {
 			targets = append(targets, target)
 			target.Labels = map[string]string{}
