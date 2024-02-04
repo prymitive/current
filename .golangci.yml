@@ -14,28 +14,39 @@ linters:
     - promlinter
     - tenv
     - errorlint
+    - errname
     - exportloopref
     - predeclared
     - contextcheck
     - exhaustive
-    - exportloopref
+    - gocritic
     - importas
     - maligned
+    - nakedret
     - prealloc
-    - promlinter
     - unconvert
+    - testifylint
+    - godot
 
 issues:
   max-same-issues: 0
 
 linters-settings:
   depguard:
-    list-type: blacklist
-    include-go-root: true
-    packages-with-error-message:
-      - github.com/stretchr/testify/assert: "Use github.com/stretchr/testify/require instead of github.com/stretchr/testify/assert"
-      - io/ioutil: "Use corresponding 'os' or 'io' functions instead."
+    rules:
+      test:
+        files:
+          - "$test"
+        deny:
+          - pkg: "github.com/stretchr/testify/assert"
+            desc: "Use github.com/stretchr/testify/require instead of github.com/stretchr/testify/assert"
+          - pkg: "io/ioutil"
+            desc: "Use corresponding 'os' or 'io' functions instead."
   goimports:
     local-prefixes: github.com/cloudflare/pint
   gofumpt:
     extra-rules: true
+  govet:
+    check-shadowing: true
+  nakedret:
+    max-func-lines: 0

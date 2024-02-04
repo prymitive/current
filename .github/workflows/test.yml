@@ -9,6 +9,8 @@ on:
 jobs:
   test-go:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -16,7 +18,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.19
+          go-version-file: go.mod
 
       - name: Test
         run: make test
@@ -25,6 +27,8 @@ jobs:
         run: git diff --exit-code
 
       - name: Report code coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./.cover/coverage.out
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

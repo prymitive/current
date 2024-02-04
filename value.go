@@ -53,7 +53,7 @@ func (n *value[T]) Stream(dec *json.Decoder) (err error) {
 	if v, ok = tok.(T); ok {
 		n.commit(v, false)
 	} else {
-		return ErrUnexpectedToken{
+		return UnexpectedTokenError{
 			offset: dec.InputOffset(),
 			str:    n,
 			msg:    fmt.Sprintf("%q is not a %T", tok, n.zero),

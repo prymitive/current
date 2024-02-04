@@ -4,6 +4,18 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gomod"
+    directory: "/tools/gofumpt"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gomod"
+    directory: "/tools/goimports"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gomod"
+    directory: "/tools/golangci-lint"
+    schedule:
+      interval: "daily"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
