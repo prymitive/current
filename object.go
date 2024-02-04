@@ -43,7 +43,7 @@ func Key[T Streamer](name string, str T) *entry[T] {
 //		}),
 //	)
 //
-// revive:disable:unexported-return
+// nolint:revive
 func Object(keys ...NamedStreamer) *object {
 	return &object{keys: keys}
 }

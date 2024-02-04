@@ -5,13 +5,13 @@ import (
 	"fmt"
 )
 
-type ErrUnexpectedToken struct {
+type UnexpectedTokenError struct {
 	offset int64
 	str    Streamer
 	msg    string
 }
 
-func (ut ErrUnexpectedToken) Error() string {
+func (ut UnexpectedTokenError) Error() string {
 	return fmt.Sprintf("invalid token at offset %d decoded by %s, %s", ut.offset, ut.str, ut.msg)
 }
 
@@ -28,7 +28,7 @@ func requireToken(dec *json.Decoder, expected json.Token, str Streamer) error {
 		return err
 	}
 	if got != expected {
-		return ErrUnexpectedToken{
+		return UnexpectedTokenError{
 			offset: dec.InputOffset(),
 			str:    str,
 			msg:    fmt.Sprintf("expected %s, got %v", expected, got),
