@@ -16,26 +16,26 @@ func TestMap(t *testing.T) {
 	var got store
 	for i, tc := range []testCaseT{
 		{
-			str:  current.Map(func(k string, v float64) {}),
+			str:  current.Map(func(_ string, _ float64) {}),
 			body: `"foo"`,
 			err:  "invalid token at offset 5 decoded by Map[float64], expected {, got foo",
 		},
 		{
-			str:  current.Map(func(k string, v float64) {}),
+			str:  current.Map(func(_ string, _ float64) {}),
 			body: `[]`,
 			err:  "invalid token at offset 1 decoded by Map[float64], expected {, got [",
 		},
 		{
-			str:  current.Map(func(k string, v float64) {}),
+			str:  current.Map(func(_ string, _ float64) {}),
 			body: `{{}}`,
 			err:  "invalid character '{'",
 		},
 		{
-			str:  current.Map(func(k string, v float64) {}),
+			str:  current.Map(func(_ string, _ float64) {}),
 			body: `{}`,
 		},
 		{
-			str:  current.Map(func(k string, v float64) {}),
+			str:  current.Map(func(_ string, _ float64) {}),
 			body: `{]`,
 			err:  "invalid character ']'",
 		},
