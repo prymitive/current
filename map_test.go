@@ -9,8 +9,8 @@ import (
 func TestMap(t *testing.T) {
 	type user struct {
 		Name   string
-		Age    int
 		Emails []string
+		Age    int
 	}
 
 	var got store

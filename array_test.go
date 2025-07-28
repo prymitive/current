@@ -5,15 +5,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/prymitive/current"
 	"github.com/stretchr/testify/require"
+
+	"github.com/prymitive/current"
 )
 
 func TestArray(t *testing.T) {
 	type user struct {
 		Name   string
-		Age    int
 		Emails []string
+		Age    int
 	}
 
 	var elemS string
@@ -123,8 +124,8 @@ func BenchmarkArray(b *testing.B) {
 
 	type user struct {
 		Name   string
-		Age    int
 		Emails []string
+		Age    int
 	}
 
 	var u user

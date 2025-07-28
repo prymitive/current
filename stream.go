@@ -6,9 +6,9 @@ import (
 )
 
 type UnexpectedTokenError struct {
-	offset int64
 	str    Streamer
 	msg    string
+	offset int64
 }
 
 func (ut UnexpectedTokenError) Error() string {

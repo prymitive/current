@@ -6,8 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/prymitive/current"
 	"github.com/stretchr/testify/require"
+
+	"github.com/prymitive/current"
 )
 
 type store struct {
@@ -25,8 +26,8 @@ func (s *store) reset() {
 type testCaseT struct {
 	str      current.Streamer
 	body     string
-	expected []any
 	err      string
+	expected []any
 }
 
 func runTestCase(t *testing.T, index int, tc testCaseT, got *store) {
