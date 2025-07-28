@@ -7,8 +7,8 @@ import (
 )
 
 type entry[T Streamer] struct {
-	name string
 	str  T
+	name string
 }
 
 func (e entry[T]) Name() string {

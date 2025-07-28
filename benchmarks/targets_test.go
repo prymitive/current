@@ -8,8 +8,9 @@ import (
 	"testing"
 
 	iter "github.com/json-iterator/go"
-	"github.com/prymitive/current"
 	"github.com/stretchr/testify/require"
+
+	"github.com/prymitive/current"
 )
 
 type Response struct {

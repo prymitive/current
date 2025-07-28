@@ -7,19 +7,13 @@ COVER_DIR     = .cover
 COVER_PROFILE = $(COVER_DIR)/coverage.out
 
 $(GOBIN)/golangci-lint: tools/golangci-lint/go.mod tools/golangci-lint/go.sum
-	go install -modfile=tools/golangci-lint/go.mod github.com/golangci/golangci-lint/cmd/golangci-lint
+	go install -modfile=tools/golangci-lint/go.mod github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 .PHONY: lint
 lint: $(GOBIN)/golangci-lint
 	$(GOBIN)/golangci-lint run
-
-$(GOBIN)/gofumpt: tools/gofumpt/go.mod tools/gofumpt/go.sum
-	go install -modfile=tools/gofumpt/go.mod mvdan.cc/gofumpt
-$(GOBIN)/goimports: tools/goimports/go.mod tools/goimports/go.sum
-	go install -modfile=tools/goimports/go.mod golang.org/x/tools/cmd/goimports
 .PHONY: format
-format: $(GOBIN)/gofumpt $(GOBIN)/goimports
-	$(GOBIN)/gofumpt -extra -l -w .
-	$(GOBIN)/goimports -local github.com/cloudflare/pint -w .
+format: $(GOBIN)/golangci-lint
+	$(GOBIN)/golangci-lint fmt
 
 .PHONY: test
 test:
